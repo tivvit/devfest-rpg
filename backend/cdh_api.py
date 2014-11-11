@@ -8,8 +8,8 @@ from protorpc import remote
 import logging
 
 from model import Users
-from messages import User
-from messages import UsersCollection
+from user_messages import User
+from user_messages import UsersCollection
 
 package = 'Devfest_CDH'
 
@@ -22,7 +22,7 @@ class DevfestCdhApi(remote.Service):
     @endpoints.method(message_types.VoidMessage, UsersCollection,
                       path='user', http_method='GET',
                       name='users.list')
-    def greetings_list(self, unused_request):
+    def users_list(self, unused_request):
         return users.list()
 
     ID_RESOURCE = endpoints.ResourceContainer(

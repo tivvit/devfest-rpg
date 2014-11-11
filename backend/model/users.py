@@ -6,14 +6,14 @@ from google.appengine.ext.ndb import msgprop
 
 from protorpc import messages
 
-from messages import User
-from messages import UsersCollection
+from user_messages import User
+from user_messages import UsersCollection
 
 import logging
 
 
 class Users(ndb.Model):
-    user = msgprop.MessageProperty(User, indexed_fields=['id', 'name', 'fraction'])
+    user = msgprop.MessageProperty(User, indexed_fields=['name', 'fraction'])
 
     def list(self):
         users = []
@@ -39,13 +39,4 @@ class Users(ndb.Model):
         )
 
         Users(user=user).put()
-
-        # if not Users.query().count():
-        #     users = Users(users=UsersCollection(user=user))
-        #     users.put()
-        #
-        # u = Users.query().get().users.user
-        # u.append(user)
-        # # users = Users(users=UsersCollection(user=user))
-        # key = u.put()
 
