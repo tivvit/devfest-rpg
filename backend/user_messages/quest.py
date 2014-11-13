@@ -4,7 +4,7 @@ from protorpc import messages
 
 class Quest(messages.Message):
     name = messages.StringField(1)
-    fraction = messages.IntegerField(2)
+    faction = messages.IntegerField(2)
     points = messages.IntegerField(3)
     # inserted = messages.DateTimeField(5)
 

@@ -3,7 +3,9 @@ __author__ = 'tivvit'
 from user import User
 from user import UsersCollection
 
-from fraction import Fraction
+from faction import FactionStats
+from faction import Stats
+from faction import FactionUsers
 
 from quest import Quest
 from quest import QuestsCollection

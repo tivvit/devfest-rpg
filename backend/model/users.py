@@ -13,7 +13,7 @@ import logging
 
 
 class Users(ndb.Model):
-    user = msgprop.MessageProperty(User, indexed_fields=['name', 'fraction'])
+    user = msgprop.MessageProperty(User, indexed_fields=['name', 'faction'])
 
     def list(self):
         users = []
@@ -27,16 +27,23 @@ class Users(ndb.Model):
         #todo query param
         return ndb.Key(Users, id).get().user
 
-    def set_fraction(self, user_id, fraction_id):
+    def delete(self, id):
+        #todo query param
+        return ndb.Key(Users, id).delete
+
+    def set_faction(self, user_id, faction_id):
         user = Users.query(Users.id == user_id).get()
-        user.fraction = fraction_id
+        user.faction = faction_id
         user.put()
 
-    # def create(self, name, email):
-    def create(self):
+    def create(self, name, email, faction = None):
         user = User(
-            name='tivvit'
+            name=name,
+            email=email,
+            faction=faction
         )
 
         Users(user=user).put()
+
+        return user
 

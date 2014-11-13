@@ -13,30 +13,32 @@ import logging
 
 
 class Quests(ndb.Model):
-    quest = msgprop.MessageProperty(Quest, indexed_fields=['name', 'fraction'])
+    quest = msgprop.MessageProperty(Quest, indexed_fields=['name', 'faction'])
 
-    # def list(self):
-    #     users = []
-    #     for usr in Users.query().fetch():
-    #         users.append(usr.user)
-    #
-    #     logging.info(users)
-    #     return UsersCollection(user=users)
-    #
-    # def get(self, id):
-    #     #todo query param
-    #     return ndb.Key(Users, id).get().user
-    #
-    # def set_fraction(self, user_id, fraction_id):
-    #     user = Users.query(Users.id == user_id).get()
-    #     user.fraction = fraction_id
-    #     user.put()
-    #
-    # # def create(self, name, email):
-    # def create(self):
-    #     user = User(
-    #         name='tivvit'
-    #     )
-    #
-    #     Users(user=user).put()
+    def list(self):
+        #todo list by fraction?
+        quests = []
+        for quest in Quests.query().fetch():
+            quests.append(quest.quest)
+
+        logging.info(quests)
+        return QuestsCollection(quest=quests)
+
+    def get(self, id):
+        #todo query param
+        return ndb.Key(Quest, id).get().quest
+
+    def delete(self, id):
+        #todo query param
+        return ndb.Key(Quest, id).delete
+
+    def create(self, name, faction, points):
+        quest = Quest(
+            name=name,
+            faction=faction,
+            points=points
+        )
+
+        Quests(quest=quest).put()
+        return quest
 
