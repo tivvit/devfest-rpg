@@ -1,12 +1,12 @@
 __author__ = 'tivvit'
 
 from model import Users
-from user_messages import User
-from user_messages import UsersCollection
+from cdh_m import User_m
+from cdh_m import UsersCollection_m
 
-from user_messages import FactionStats
-from user_messages import Stats
-from user_messages import FactionUsers
+from cdh_m import FactionStats_m
+from cdh_m import Stats_m
+from cdh_m import FactionUsers_m
 
 import logging
 

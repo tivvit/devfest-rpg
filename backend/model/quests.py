@@ -6,14 +6,14 @@ from google.appengine.ext.ndb import msgprop
 
 from protorpc import messages
 
-from user_messages import Quest
-from user_messages import QuestsCollection
+from cdh_m import Quest_m
+from cdh_m import QuestsCollection_m
 
 import logging
 
 
 class Quests(ndb.Model):
-    quest = msgprop.MessageProperty(Quest, indexed_fields=['name', 'faction'])
+    quest = msgprop.MessageProperty(Quest_m, indexed_fields=['name', 'faction'])
 
     def list(self):
         #todo list by fraction?
@@ -30,7 +30,7 @@ class Quests(ndb.Model):
 
     def delete(self, id):
         #todo query param
-        return ndb.Key(Quest, id).delete
+        return ndb.Key(Quest, id).delete()
 
     def create(self, name, faction, points):
         quest = Quest(
