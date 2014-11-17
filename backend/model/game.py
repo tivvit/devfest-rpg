@@ -7,6 +7,7 @@ from cdh_m import UsersCollection_m
 from cdh_m import FactionStats_m
 from cdh_m import Stats_m
 from cdh_m import FactionUsers_m
+from cdh_m import Leaderboard_m
 
 import logging
 
@@ -21,10 +22,16 @@ class Game(object):
 
         logging.info("%s", users)
 
+        leaderboard = []
+
         for user in Users.query().fetch():
             if user.faction:
                 users[user.faction] += 1
                 points[user.faction-1] += user.get_points_sum(user.key.id())
+            leaderboard.append(Leaderboard_m(
+                user=user.get(user.key.id()),
+                points=user.get_points_sum(user.key.id())
+            ))
 
         faUsers = []
         for usr in users:
@@ -36,5 +43,7 @@ class Game(object):
 
         logging.info("%s", users)
 
-        return FactionStats_m(users=faUsers, stats=stats)
+        leaderboard.sort(key=lambda x: x.points, reverse=True)
+
+        return FactionStats_m(users=faUsers, stats=stats, leaderboard=leaderboard)
 

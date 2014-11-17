@@ -42,16 +42,31 @@ class DevfestCdhApi(remote.Service):
     def users_list(self, unused_request):
         return self.users.list()
 
+    QUERY = endpoints.ResourceContainer(
+            message_types.VoidMessage,
+            query=messages.StringField(1, variant=messages.Variant.STRING))
+
+    @endpoints.method(QUERY, UsersCollection_m,
+                      path='userSearch/{query}', http_method='GET',
+                      name='users.search')
+    def users_search(self, request):
+        try:
+            return self.users.search(request.query)
+        except (IndexError, TypeError):
+            raise endpoints.NotFoundException('User %s not found.' %
+                                              (request.id))
+
     ID_RESOURCE = endpoints.ResourceContainer(
             message_types.VoidMessage,
             id=messages.IntegerField(1, variant=messages.Variant.INT32))
+
 
     @endpoints.method(ID_RESOURCE, User_m,
                       path='user/{id}', http_method='GET',
                       name='users.getUser')
     def user_get(self, request):
         try:
-            return self.users.get(request.id)
+            return self.users.search(request.id)
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('User %s not found.' %
                                               (request.id))

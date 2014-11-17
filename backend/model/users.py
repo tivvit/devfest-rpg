@@ -39,6 +39,17 @@ class Users(ndb.Model):
         logging.info(users)
         return UsersCollection_m(user=users)
 
+    def search(self, query):
+        users = []
+        # for user in Users.query(Users.name==query).fetch():
+        # todo use search API
+        for user in Users.query().fetch():
+            if user.name and query in user.name:
+                users.append(self._map_message(user))
+
+        logging.info(users)
+        return UsersCollection_m(user=users)
+
     def get(self, id):
         #todo query param
         return self._map_message(ndb.Key(Users, id).get())
