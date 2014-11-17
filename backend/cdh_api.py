@@ -23,6 +23,8 @@ from cdh_m import SolvedQuest_m
 from cdh_m import SolvedQuestSum_m
 from cdh_m import SolvedQuestsCollection_m
 
+from cdh_m import Leaderboard_m
+
 package = 'Devfest_CDH'
 
 @endpoints.api(name='devfest_cdh_api', version='v1', description='Devfest 2014 CDH API')
@@ -210,6 +212,19 @@ class DevfestCdhApi(remote.Service):
     def faction_stats_get(self, request):
         try:
             return self.game.stats()
+        except (IndexError, TypeError):
+            raise endpoints.NotFoundException('Quest %s not found.')
+
+    LIMIT = endpoints.ResourceContainer(
+            message_types.VoidMessage,
+            limit=messages.IntegerField(1, variant=messages.Variant.INT32))
+
+    @endpoints.method(LIMIT, Leaderboard_m,
+                      path='leaderboard/{limit}', http_method='GET',
+                      name='leaderboard.get')
+    def leaderboard_get(self, request):
+        try:
+            return self.game.leaderboard(request.limit)
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('Quest %s not found.')
 

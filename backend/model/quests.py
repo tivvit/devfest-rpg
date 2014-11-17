@@ -3,11 +3,9 @@ __author__ = 'tivvit'
 
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
-
 from protorpc import messages
 
-from cdh_m import Quest_m
-from cdh_m import QuestsCollection_m
+from backend.cdh_m import Quest_m, QuestsCollection_m
 
 import logging
 

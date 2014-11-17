@@ -2,15 +2,16 @@ application: devfest-cz-2014
 version: 1
 runtime: python27
 api_version: 1
-threadsafe: yes
+threadsafe: true
 
 handlers:
-#- url: .*
-#  script: main.app
+- url: /admin
+  static_dir: admin
+
 # This handler routes requests to your APIs to your Endpoints code.
 # See https://developers.google.com/appengine/docs/python/endpoints/
 - url: /_ah/spi/.*
-  script: cdh_api.APPLICATION
+  script: backend.cdh_api.APPLICATION
 
 libraries:
 - name: endpoints

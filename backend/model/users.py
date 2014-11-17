@@ -6,15 +6,8 @@ from google.appengine.ext.ndb import msgprop
 
 from protorpc import messages
 
-from cdh_m import User_m
-from cdh_m import UsersCollection_m
-
-from cdh_m import SolvedQuestSum_m
-from cdh_m import SolvedQuest_m
-from cdh_m import SolvedQuestsCollection_m
-
+from backend.cdh_m import User_m, UsersCollection_m, SolvedQuestSum_m, SolvedQuest_m, SolvedQuestsCollection_m
 from solved_quest import SolvedQuest
-
 from quests import Quests
 
 import logging

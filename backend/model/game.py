@@ -1,13 +1,8 @@
 __author__ = 'tivvit'
 
-from model import Users
-from cdh_m import User_m
-from cdh_m import UsersCollection_m
+from users import Users
 
-from cdh_m import FactionStats_m
-from cdh_m import Stats_m
-from cdh_m import FactionUsers_m
-from cdh_m import Leaderboard_m
+from backend.cdh_m import  User_m, UsersCollection_m, FactionStats_m, Stats_m, FactionUsers_m, Leaderboard_entry_m, Leaderboard_m
 
 import logging
 
@@ -28,10 +23,6 @@ class Game(object):
             if user.faction:
                 users[user.faction] += 1
                 points[user.faction-1] += user.get_points_sum(user.key.id())
-            leaderboard.append(Leaderboard_m(
-                user=user.get(user.key.id()),
-                points=user.get_points_sum(user.key.id())
-            ))
 
         faUsers = []
         for usr in users:
@@ -43,7 +34,18 @@ class Game(object):
 
         logging.info("%s", users)
 
+        return FactionStats_m(users=faUsers, stats=stats)
+
+    def leaderboard(self, limit):
+        leaderboard = []
+
+        for user in Users.query().fetch():
+            leaderboard.append(Leaderboard_entry_m(
+                user=user.get(user.key.id()),
+                points=user.get_points_sum(user.key.id())
+            ))
+
         leaderboard.sort(key=lambda x: x.points, reverse=True)
 
-        return FactionStats_m(users=faUsers, stats=stats, leaderboard=leaderboard)
+        return Leaderboard_m(leaderboard=leaderboard[:limit])
 

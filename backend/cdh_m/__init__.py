@@ -8,6 +8,7 @@ from faction_m import Stats_m
 from faction_m import FactionUsers_m
 from faction_m import FactionId_m
 from faction_m import Leaderboard_m
+from faction_m import Leaderboard_entry_m
 
 from quest_m import Quest_m
 from quest_m import QuestsCollection_m
