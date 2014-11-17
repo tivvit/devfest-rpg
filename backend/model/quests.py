@@ -36,7 +36,6 @@ class Quests(ndb.Model):
         return QuestsCollection_m(quest=quests)
 
     def get(self, id):
-        #todo query param
         return self._mapMessage(ndb.Key(Quests, id).get())
 
     def delete(self, id):

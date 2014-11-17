@@ -51,11 +51,9 @@ class Users(ndb.Model):
         return UsersCollection_m(user=users)
 
     def get(self, id):
-        #todo query param
         return self._map_message(ndb.Key(Users, id).get())
 
     def delete(self, id):
-        #todo query param
         return ndb.Key(Users, id).delete()
 
     def set_faction(self, user_id, faction_id):
