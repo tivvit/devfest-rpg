@@ -15,7 +15,8 @@ class SolvedQuest(ndb.Model):
             points=points,
         )
 
-        return solved.put()
+        solved.put()
+        return solved
 
     def solve_quest(self, user_id, quest_id, points):
         solved = SolvedQuest(
@@ -24,7 +25,8 @@ class SolvedQuest(ndb.Model):
             points=points
         )
 
-        return solved.put()
+        solved.put()
+        return solved
 
     def get_user_points_sum(self, user_id):
         sum = 0

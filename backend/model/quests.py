@@ -13,32 +13,50 @@ import logging
 
 
 class Quests(ndb.Model):
-    quest = msgprop.MessageProperty(Quest_m, indexed_fields=['name', 'faction'])
+    name = ndb.StringProperty()
+    faction = ndb.IntegerProperty()
+    points = ndb.IntegerProperty()
+
+    #quest = msgprop.MessageProperty(Quest_m, indexed_fields=['name', 'faction'])
 
     def list(self):
-        #todo list by fraction?
         quests = []
         for quest in Quests.query().fetch():
-            quests.append(quest.quest)
+            quests.append(self._mapMessage(quest))
 
         logging.info(quests)
-        return QuestsCollection(quest=quests)
+        return QuestsCollection_m(quest=quests)
+
+    def list_by_fraction(self, id_fraction):
+        quests = []
+        for quest in Quests.query(Quests.faction == id_fraction).fetch():
+            quests.append(self._mapMessage(quest))
+
+        logging.info(quests)
+        return QuestsCollection_m(quest=quests)
 
     def get(self, id):
         #todo query param
-        return ndb.Key(Quest, id).get().quest
+        return self._mapMessage(ndb.Key(Quests, id).get())
 
     def delete(self, id):
-        #todo query param
-        return ndb.Key(Quest, id).delete()
+        return ndb.Key(Quests, id).delete()
 
     def create(self, name, faction, points):
-        quest = Quest(
+        quest = Quests(
             name=name,
             faction=faction,
             points=points
         )
 
-        Quests(quest=quest).put()
-        return quest
+        quest.put()
+        return self._mapMessage(quest)
+
+    def _mapMessage(self, quest):
+        return Quest_m(
+            name=quest.name,
+            faction=quest.faction,
+            points=quest.points,
+            id=quest.key.id()
+        )
 

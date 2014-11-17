@@ -22,19 +22,19 @@ class Game(object):
         logging.info("%s", users)
 
         for user in Users.query().fetch():
-            if user.user.faction:
-                users[user.user.faction] += 1
+            if user.faction:
+                users[user.faction] += 1
+                points[user.faction-1] += user.get_points_sum(user.key.id())
 
         faUsers = []
         for usr in users:
-            faUsers.append(FactionUsers(users=usr))
+            faUsers.append(FactionUsers_m(users=usr))
 
-        #todo user ponts
         stats = []
         for usr in points:
-            stats.append(Stats(points=usr))
+            stats.append(Stats_m(points=usr))
 
         logging.info("%s", users)
 
-        return FactionStats(users=faUsers, stats=stats)
+        return FactionStats_m(users=faUsers, stats=stats)
 

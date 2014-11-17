@@ -6,6 +6,7 @@ class Quest_m(messages.Message):
     name = messages.StringField(1)
     faction = messages.IntegerField(2)
     points = messages.IntegerField(3)
+    id = messages.IntegerField(4)
     # inserted = messages.DateTimeField(5)
 
 class QuestsCollection_m(messages.Message):

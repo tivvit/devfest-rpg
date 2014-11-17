@@ -56,8 +56,6 @@ class DevfestCdhApi(remote.Service):
             raise endpoints.NotFoundException('User %s not found.' %
                                               (request.id))
 
-
-
     MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(User_m)
         # ,
         # name=messages.StringField(2, variant=messages.Variant.STRING,
@@ -67,7 +65,7 @@ class DevfestCdhApi(remote.Service):
                       path='user', http_method='POST',
                       name='users.addUser')
     def user_add(self, request):
-        return self.users.create(request.name, request.email, request.faction)
+        return self.users.create(request.name, request.email) #, request.faction)
         #return User(name=request.name) #* request.name
 
     MULTIPLY_METHOD_RESOURCE_FACTION = endpoints.ResourceContainer(
@@ -75,11 +73,11 @@ class DevfestCdhApi(remote.Service):
         faction_id=messages.IntegerField(3, variant=messages.Variant.INT32, required=True)
     )
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE_FACTION, FactionId_m,
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE_FACTION, User_m,
                       path='setFraction/{user_id}', http_method='POST',
                       name='users.setFaction')
     def user_set_fraction(self, request):
-        return self.users.set_faction(request.user_id, request.user_id)
+        return self.users.set_faction(request.user_id, request.faction_id)
 
     @endpoints.method(ID_RESOURCE, User_m,
                       path='user/{id}', http_method='DELETE',
@@ -99,27 +97,37 @@ class DevfestCdhApi(remote.Service):
         quest_id=messages.IntegerField(3, variant=messages.Variant.INT32, required=True)
     )
 
-    @endpoints.method(ID_RESOURCE, SolvedQuestSum_m,
+    @endpoints.method(ID_RESOURCE, SolvedQuestsCollection_m,
                       path='userPoints/{id}', http_method='GET',
-                      name='user.getPointsSum')
+                      name='users.getPoints')
     def user_get_points(self, request):
+        # try:
+        return self.users.get_points(request.id)
+        # except (IndexError, TypeError):
+        #     raise endpoints.NotFoundException('User %s not found.' %
+        #                                       (request.id))
+
+    @endpoints.method(ID_RESOURCE, SolvedQuestSum_m,
+                      path='userPointsSum/{id}', http_method='GET',
+                      name='users.getPointsSum')
+    def user_get_points_sum_m(self, request):
         try:
             return self.users.get_points_sum(request.id)
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('User %s not found.' %
                                               (request.id))
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE_QUEST, User_m,
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE_QUEST, SolvedQuest_m,
                       path='givePoints/{user_id}', http_method='POST',
                       name='users.givePoints')
     def user_give_points(self, request):
         return self.users.add_points(request.user_id, request.quest_id)
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE_QUEST, User_m,
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE_QUEST, SolvedQuest_m,
                       path='questSolved/{user_id}', http_method='POST',
                       name='users.questSolved')
     def user_quest_solved(self, request):
-        return self.users.solve_quest(request.user_id)
+        return self.users.solve_quest(request.user_id, request.quest_id)
 
     """
         Quests
@@ -129,6 +137,17 @@ class DevfestCdhApi(remote.Service):
                       name='quests.list')
     def quests_list(self, unused_request):
         return self.quests.list()
+
+    ID_RESOURCE = endpoints.ResourceContainer(
+            message_types.VoidMessage,
+            id=messages.IntegerField(1, variant=messages.Variant.INT32)
+    )
+
+    @endpoints.method(ID_RESOURCE, QuestsCollection_m,
+                      path='freactionQuest/{id}', http_method='GET',
+                      name='quests.listFractionQuests')
+    def quests_list_fraction(self, request):
+        return self.quests.list_by_fraction(request.id)
 
     ID_RESOURCE = endpoints.ResourceContainer(
             message_types.VoidMessage,
