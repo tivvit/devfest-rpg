@@ -9,6 +9,8 @@ from backend.cdh_m import Quest_m, QuestsCollection_m
 
 import logging
 
+from faction_names import faction_names
+
 
 class Quests(ndb.Model):
     name = ndb.StringProperty()
@@ -52,7 +54,7 @@ class Quests(ndb.Model):
     def _mapMessage(self, quest):
         return Quest_m(
             name=quest.name,
-            faction=quest.faction,
+            faction=faction_names[quest.faction-1] if quest.faction else "",
             points=quest.points,
             id=quest.key.id()
         )

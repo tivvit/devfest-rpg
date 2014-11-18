@@ -10,6 +10,8 @@ from backend.cdh_m import User_m, UsersCollection_m, SolvedQuestSum_m, SolvedQue
 from solved_quest import SolvedQuest
 from quests import Quests
 
+from faction_names import faction_names
+
 import logging
 
 
@@ -130,6 +132,6 @@ class Users(ndb.Model):
         return User_m(
             name=user.name,
             email=user.email,
-            faction=user.faction,
+            faction=faction_names[user.faction-1] if user.faction else "",
             id=user.key.id()
         )

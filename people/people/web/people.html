@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>People</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    
+    <script async type="application/dart" src="people.dart"></script>
+    <script async src="packages/browser/dart.js"></script>
+    
+    <link rel="stylesheet" href="people.css">
+  </head>
+  <body class="container">
+    <h1>People</h1>
+    
+    <form id="searchForm">
+      <input type="text" name="query">
+      <input type="submit" value="Hledej">
+    </form>
+    
+    <div id="person">
+      <div class="name"></div>
+      <div class="email"></div>
+      <div class="faction"></div>
+      
+      <table class="table table-condensed table-responsive" id="quests">
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th>Faction</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    </div>
+    
+    <table class="table table-condensed table-responsive table-hover" id="people">
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th>Faction</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+  </body>
+</html>

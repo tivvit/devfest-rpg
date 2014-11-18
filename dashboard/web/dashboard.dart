@@ -10,7 +10,7 @@ void loadStats() {
 }
 
 void loadLeaderboard() {
-  var url = baseUrl + "leaderboard/10";
+  var url = baseUrl + "leaderboard/20";
   var request = HttpRequest.getString(url).then(onLeaderboardLoaded);
 }
 
@@ -36,13 +36,14 @@ void onStatsLoaded(String responseText) {
   }
 
   Bar statsBar = new Bar({
-    'labels': ["1", "2", "3"],
+    //'labels': ["Exodité", "Metalidé", "Vitalisté"],
+    'labels': ["", "", ""],
     'datasets': [{
         'fillColor': "rgba(75,164,227,0.5)",
         'data': statsData
       }]
   }, {
-    'titleText': 'Points per faction',
+    'titleText': 'Research points',
     'scaleMinValue': 0.0,
     'barShowStroke': false,
     'scaleOverride': true,
@@ -73,10 +74,12 @@ void onStatsLoaded(String responseText) {
 
 void onLeaderboardLoaded(String responseText) {
   Map stats = JSON.decode(responseText);
-  print(stats["leaderboard"]);
+  print(stats["leaderboard1"]);
 
-  var leaderboard = querySelector("#leaderboard tbody");
+  var leaderboard1 = querySelector("#leaderboard1 tbody");
+  var leaderboard2 = querySelector("#leaderboard2 tbody");
 
+  int cntr = 0;
   for (var player in stats["leaderboard"]) {
     //print(player);
     Element row = new Element.tag('tr')
@@ -84,7 +87,12 @@ void onLeaderboardLoaded(String responseText) {
         ..append(new Element.tag('td')..text = player["points"])
         ..append(new Element.tag('td')..text = player["user"]["faction"]);
 
-    leaderboard.append(row);
+    if(cntr < 10)
+      leaderboard1.append(row);
+    else
+      leaderboard2.append(row);
+    
+    cntr++;
   }
 }
 
