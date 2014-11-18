@@ -26,7 +26,7 @@ class Users(ndb.Model):
 
     def list(self):
         users = []
-        for user in Users.query().fetch():
+        for user in Users.query().order(Users.name).fetch():
             users.append(self._map_message(user))
 
         logging.info(users)
@@ -65,7 +65,7 @@ class Users(ndb.Model):
         )
 
         user.put()
-        return self._map_message("%", user)
+        return self._map_message(user)
 
     def get_points(self, user_id):
         solved_quest = SolvedQuest()

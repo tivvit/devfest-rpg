@@ -60,7 +60,7 @@ class DevfestCdhApi(remote.Service):
 
     ID_RESOURCE = endpoints.ResourceContainer(
             message_types.VoidMessage,
-            id=messages.IntegerField(1, variant=messages.Variant.INT32))
+            id=messages.IntegerField(1, variant=messages.Variant.INT64))
 
 
     @endpoints.method(ID_RESOURCE, User_m,
@@ -86,8 +86,8 @@ class DevfestCdhApi(remote.Service):
         #return User(name=request.name) #* request.name
 
     MULTIPLY_METHOD_RESOURCE_FACTION = endpoints.ResourceContainer(
-        user_id=messages.IntegerField(2, variant=messages.Variant.INT32, required=True),
-        faction_id=messages.IntegerField(3, variant=messages.Variant.INT32, required=True)
+        user_id=messages.IntegerField(2, variant=messages.Variant.INT64, required=True),
+        faction_id=messages.IntegerField(3, variant=messages.Variant.INT64, required=True)
     )
 
     @endpoints.method(MULTIPLY_METHOD_RESOURCE_FACTION, User_m,
@@ -110,8 +110,8 @@ class DevfestCdhApi(remote.Service):
         User Quests
     """
     MULTIPLY_METHOD_RESOURCE_QUEST = endpoints.ResourceContainer(
-        user_id=messages.IntegerField(2, variant=messages.Variant.INT32, required=True),
-        quest_id=messages.IntegerField(3, variant=messages.Variant.INT32, required=True)
+        user_id=messages.IntegerField(2, variant=messages.Variant.INT64, required=True),
+        quest_id=messages.IntegerField(3, variant=messages.Variant.INT64, required=True)
     )
 
     @endpoints.method(ID_RESOURCE, SolvedQuestsCollection_m,
@@ -127,9 +127,9 @@ class DevfestCdhApi(remote.Service):
     @endpoints.method(ID_RESOURCE, SolvedQuestSum_m,
                       path='userPointsSum/{id}', http_method='GET',
                       name='users.getPointsSum')
-    def user_get_points_sum_m(self, request):
+    def user_get_points_sum(self, request):
         try:
-            return self.users.get_points_sum(request.id)
+            return self.users.get_points_sum_m(request.id)
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('User %s not found.' %
                                               (request.id))
@@ -157,7 +157,7 @@ class DevfestCdhApi(remote.Service):
 
     ID_RESOURCE = endpoints.ResourceContainer(
             message_types.VoidMessage,
-            id=messages.IntegerField(1, variant=messages.Variant.INT32)
+            id=messages.IntegerField(1, variant=messages.Variant.INT64)
     )
 
     @endpoints.method(ID_RESOURCE, QuestsCollection_m,
@@ -168,7 +168,7 @@ class DevfestCdhApi(remote.Service):
 
     ID_RESOURCE = endpoints.ResourceContainer(
             message_types.VoidMessage,
-            id=messages.IntegerField(1, variant=messages.Variant.INT32)
+            id=messages.IntegerField(1, variant=messages.Variant.INT64)
     )
 
     @endpoints.method(ID_RESOURCE, Quest_m,
@@ -217,7 +217,7 @@ class DevfestCdhApi(remote.Service):
 
     LIMIT = endpoints.ResourceContainer(
             message_types.VoidMessage,
-            limit=messages.IntegerField(1, variant=messages.Variant.INT32))
+            limit=messages.IntegerField(1, variant=messages.Variant.INT64))
 
     @endpoints.method(LIMIT, Leaderboard_m,
                       path='leaderboard/{limit}', http_method='GET',
