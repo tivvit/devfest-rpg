@@ -8,6 +8,29 @@ handlers:
 - url: /admin
   static_dir: admin
 
+#- url: /dashboard/dashboard
+#  static_dir: dashboard/dashboard
+
+- url: /dashboard
+  static_files: dashboard/build/web/dashboard.html
+  upload: dashboard/*
+
+- url: /packages/(.*)
+  static_files: dashboard/build/web/packages/\1
+  upload: dashboard/*
+
+- url: /dashboard.css
+  static_files: dashboard/build/web/dashboard.css
+  upload: dashboard/*
+
+- url: /dashboard.dart.js
+  static_files: dashboard/build/web/dashboard.dart.js
+  upload: dashboard/*
+
+- url: /dashboard.dart.js.map
+  static_files: dashboard/build/web/dashboard.dart.js.map
+  upload: dashboard/*
+
 # This handler routes requests to your APIs to your Endpoints code.
 # See https://developers.google.com/appengine/docs/python/endpoints/
 - url: /_ah/spi/.*

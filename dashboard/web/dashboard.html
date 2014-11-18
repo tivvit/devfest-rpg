@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+        
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    
+    <script async type="application/dart" src="dashboard.dart"></script>
+    <script async src="packages/browser/dart.js"></script>
+    
+    <link rel="stylesheet" href="dashboard.css">
+  </head>
+  <body class="container">
+    <h1>Devfest 2014</h1>
+    
+    <div id="stats" class="col-md-6"></div>
+    <div id="users" class="col-md-6"></div>
+    
+    <table class="table table-striped table-condensed table-responsive" id="leaderboard">
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th>Points</th>
+              <th>Faction</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+       
+
+  </body>
+</html>

@@ -1,0 +1,5 @@
+name: dashboard
+description: A sample web application
+dependencies:
+  browser: any
+  chart: ">=1.0.5 <2.0.0"
