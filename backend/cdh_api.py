@@ -210,10 +210,10 @@ class DevfestCdhApi(remote.Service):
                       path='stats', http_method='GET',
                       name='faction.Stats')
     def faction_stats_get(self, request):
-        try:
-            return self.game.stats()
-        except (IndexError, TypeError):
-            raise endpoints.NotFoundException('Quest %s not found.')
+        # try:
+        return self.game.stats()
+        # except (IndexError, TypeError):
+        #     raise endpoints.NotFoundException('Quest %s not found.')
 
     LIMIT = endpoints.ResourceContainer(
             message_types.VoidMessage,

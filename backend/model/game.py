@@ -1,7 +1,6 @@
 __author__ = 'tivvit'
 
 from users import Users
-
 from backend.cdh_m import  User_m, UsersCollection_m, FactionStats_m, Stats_m, FactionUsers_m, Leaderboard_entry_m, Leaderboard_m
 
 import logging
@@ -15,13 +14,9 @@ class Game(object):
         users = [0, 0, 0]
         points = [0, 0, 0]
 
-        logging.info("%s", users)
-
-        leaderboard = []
-
         for user in Users.query().fetch():
             if user.faction:
-                users[user.faction] += 1
+                users[user.faction-1] += 1
                 points[user.faction-1] += user.get_points_sum(user.key.id())
 
         faUsers = []
