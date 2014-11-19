@@ -56,7 +56,8 @@ class Quests(ndb.Model):
     def _mapMessage(self, quest):
         return Quest_m(
             name=quest.name,
-            faction=faction_names[quest.faction-1] if quest.faction else "",
+            factionId=quest.faction,
+            faction=faction_names[quest.faction] if quest.faction else "",
             points=quest.points,
             num=quest.num,
             id=quest.key.id()

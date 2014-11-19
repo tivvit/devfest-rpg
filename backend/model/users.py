@@ -1,6 +1,5 @@
 __author__ = 'tivvit'
 
-
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 
@@ -52,24 +51,18 @@ class Users(ndb.Model):
     def delete(self, id):
         return ndb.Key(Users, id).delete()
 
-    def set_faction(self, user_id, faction_id):
-        limit = 10
+    def allowed_to_faction(self, game, user_id):
+        user_points = self.get_points_sum(user_id)
+        print "points" + str(user_points)
+        print game.get_min_faction_points()
+        return user_points >= game.get_min_faction_points()
 
-        game = Game()
-        stats = game.stats()
-
-        max = 0
-        min = stats["users"][0]["users"]
-
-        for users in stats["users"]:
-            if min > users["users"]:
-                min = users["users"]
-            if max < users["users"]:
-                max = users["users"]
-
+    def set_faction(self, game, user_id, faction_id):
         user = ndb.Key(Users, user_id).get()
 
-        if max > (min + 10) and stats["users"][faction_id-1]["users"] == max:
+        print self.allowed_to_faction(game, user_id)
+        print game.faction_hiring(faction_id).hiring
+        if not user.faction and self.allowed_to_faction(game, user_id) and game.faction_hiring(faction_id).hiring:
             user.faction = faction_id
             user.put()
 
@@ -101,10 +94,10 @@ class Users(ndb.Model):
 
             solved_quests.append(
                 SolvedQuest_m(
-                    userId = solve.id_user,
-                    questId = solve.id_quest,
-                    points = solve.points,
-                    quest = quest
+                    userId=solve.id_user,
+                    questId=solve.id_quest,
+                    points=solve.points,
+                    quest=quest
                 )
             )
 
@@ -144,10 +137,27 @@ class Users(ndb.Model):
             points=solved.points
         )
 
+    def get_stats(self, user_id, faction_id):
+        from backend.cdh_m import Quest_m, User_stats_m
+
+        user = self._map_message(ndb.Key(Users, user_id).get())
+        q = []
+        q.append(Quest_m(name="aa", faction="aa", points=2))
+        q.append(Quest_m(name="aa", faction="aa", points=2))
+        return User_stats_m(
+            user=user,
+            todo=q,
+            quests=[Quest_m(name="aa", faction="aa", points=4)],
+            pointsSum=55,
+            allowedToFaction=1
+        )
+
+
     def _map_message(self, user):
         return User_m(
             name=user.name,
             email=user.email,
-            faction=faction_names[user.faction-1] if user.faction else "",
+            factionId=user.faction,
+            faction=faction_names[user.faction] if user.faction else "",
             id=user.key.id()
         )

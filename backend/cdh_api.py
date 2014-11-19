@@ -9,17 +9,18 @@ import logging
 
 from model import Users
 from cdh_m import User_m
-from cdh_m import User_input_m
 from cdh_m import UsersCollection_m
+from cdh_m import User_stats_m
 
 from model import Quests
 from cdh_m import Quest_m
-from cdh_m import Quest_input_m
 from cdh_m import QuestsCollection_m
 
 from model import Game
 from cdh_m import FactionStats_m
 from cdh_m import FactionId_m
+from cdh_m import FactionFull_m
+from cdh_m import FactionMinPoints_m
 
 from cdh_m import SolvedQuest_m
 from cdh_m import SolvedQuestSum_m
@@ -75,12 +76,27 @@ class DevfestCdhApi(remote.Service):
             raise endpoints.NotFoundException('User %s not found.' %
                                               (request.id))
 
+    MULTIPLY_METHOD_RESOURCE_QUEST = endpoints.ResourceContainer(
+        user_id=messages.IntegerField(2, variant=messages.Variant.INT64, required=True),
+        faction_id=messages.IntegerField(3, variant=messages.Variant.INT64, required=True)
+    )
+
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE_QUEST, User_stats_m,
+                      path='userStats/{user_id}', http_method='GET',
+                      name='users.getUserStats')
+    def user_stat(self, request):
+        try:
+            return self.users.get_stats(request.user_id, request.faction_id)
+        except (IndexError, TypeError):
+            raise endpoints.NotFoundException('User %s not found.' %
+                                              (request.id))
+
     MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(User_m)
         # ,
         # name=messages.StringField(2, variant=messages.Variant.STRING,
         #                             required=True))
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE, User_input_m,
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE, User_m,
                       path='user', http_method='POST',
                       name='users.addUser')
     def user_add(self, request):
@@ -96,7 +112,7 @@ class DevfestCdhApi(remote.Service):
                       path='setFraction/{user_id}', http_method='POST',
                       name='users.setFaction')
     def user_set_fraction(self, request):
-        return self.users.set_faction(request.user_id, request.faction_id)
+        return self.users.set_faction(self.game, request.user_id, request.faction_id)
 
     @endpoints.method(ID_RESOURCE, User_m,
                       path='user/{id}', http_method='DELETE',
@@ -183,7 +199,7 @@ class DevfestCdhApi(remote.Service):
             raise endpoints.NotFoundException('Quest %s not found.' %
                                               (request.id))
 
-    MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(Quest_input_m)
+    MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(Quest_m)
         # ,
         # name=messages.StringField(2, variant=messages.Variant.STRING,
         #                             required=True))
@@ -192,7 +208,7 @@ class DevfestCdhApi(remote.Service):
                       path='quest', http_method='POST',
                       name='quests.addQuest')
     def quest_add(self, request):
-        return self.quests.create(request.name, request.faction, request.points, request.num)
+        return self.quests.create(request.name, request.factionId, request.points, request.num)
         #return User(name=request.name) #* request.name
 
     @endpoints.method(ID_RESOURCE, Quest_m,
@@ -217,6 +233,19 @@ class DevfestCdhApi(remote.Service):
         # except (IndexError, TypeError):
         #     raise endpoints.NotFoundException('Quest %s not found.')
 
+    ID_RESOURCE = endpoints.ResourceContainer(
+            message_types.VoidMessage,
+            id=messages.IntegerField(1, variant=messages.Variant.INT64))
+
+    @endpoints.method(ID_RESOURCE, FactionFull_m,
+                      path='factionHiring/{id}', http_method='GET',
+                      name='faction.hiring')
+    def faction_hiring(self, request):
+        # try:
+        return self.game.faction_hiring(request.id)
+        # except (IndexError, TypeError):
+        #     raise endpoints.NotFoundException('Quest %s not found.')
+
     LIMIT = endpoints.ResourceContainer(
             message_types.VoidMessage,
             limit=messages.IntegerField(1, variant=messages.Variant.INT64))
@@ -229,6 +258,21 @@ class DevfestCdhApi(remote.Service):
             return self.game.leaderboard(request.limit)
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('Quest %s not found.')
+
+    VALUE = endpoints.ResourceContainer(
+            message_types.VoidMessage,
+            value=messages.IntegerField(1, variant=messages.Variant.INT64))
+
+    @endpoints.method(VALUE, FactionMinPoints_m,
+                      path='factionMinPoints', http_method='POST',
+                      name='faction.minPoints')
+    def faction_min_points(self, request):
+        # try:
+        return self.game.set_min_faction_points(request.value)
+        # except (IndexError, TypeError):
+        #     raise endpoints.NotFoundException('Quest %s not found.')
+
+
 
 
 APPLICATION = endpoints.api_server([DevfestCdhApi])

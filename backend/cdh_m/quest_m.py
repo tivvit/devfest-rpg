@@ -2,12 +2,6 @@ __author__ = 'tivvit'
 
 from protorpc import messages
 
-class Quest_input_m(messages.Message):
-    name = messages.StringField(1)
-    faction = messages.IntegerField(2)
-    points = messages.IntegerField(3)
-    num = messages.IntegerField(4)
-    id = messages.IntegerField(5)
 
 class Quest_m(messages.Message):
     name = messages.StringField(1)
@@ -15,6 +9,7 @@ class Quest_m(messages.Message):
     points = messages.IntegerField(3)
     num = messages.IntegerField(4)
     id = messages.IntegerField(5)
+    factionId = messages.IntegerField(6)
     # inserted = messages.DateTimeField(5)
 
 class QuestsCollection_m(messages.Message):

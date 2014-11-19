@@ -1,8 +1,8 @@
 __author__ = 'tivvit'
 
 from user_m import User_m
-from user_m import User_input_m
 from user_m import UsersCollection_m
+from user_m import User_stats_m
 
 from faction_m import FactionStats_m
 from faction_m import Stats_m
@@ -10,9 +10,10 @@ from faction_m import FactionUsers_m
 from faction_m import FactionId_m
 from faction_m import Leaderboard_m
 from faction_m import Leaderboard_entry_m
+from faction_m import FactionFull_m
+from faction_m import FactionMinPoints_m
 
 from quest_m import Quest_m
-from quest_m import Quest_input_m
 from quest_m import QuestsCollection_m
 
 from solved_quest_m import SolvedQuest_m

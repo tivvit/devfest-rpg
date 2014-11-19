@@ -24,5 +24,10 @@ class FactionStats_m(messages.Message):
     stats = messages.MessageField(Stats_m, 1, repeated=True)
     users = messages.MessageField(FactionUsers_m, 2, repeated=True)
 
+class FactionFull_m(messages.Message):
+    hiring = messages.IntegerField(1)
+
+class FactionMinPoints_m(messages.Message):
+    min = messages.IntegerField(1)
 
 
