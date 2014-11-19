@@ -1,6 +1,8 @@
-package cz.destil.cdh2014;
+package cz.destil.cdh2014.util;
 
 import android.widget.Toast;
+
+import cz.destil.cdh2014.App;
 
 /**
  * TODO

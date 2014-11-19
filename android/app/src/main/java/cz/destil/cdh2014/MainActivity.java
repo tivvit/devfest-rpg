@@ -3,6 +3,8 @@ package cz.destil.cdh2014;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
@@ -14,7 +16,9 @@ import butterknife.InjectView;
 import cz.destil.cdh2014.api.Api;
 import cz.destil.cdh2014.api.model.FactionHiring;
 import cz.destil.cdh2014.api.model.User;
+import cz.destil.cdh2014.data.Preferences;
 import cz.destil.cdh2014.event.UsersDownloadedEvent;
+import cz.destil.cdh2014.util.Toas;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -47,6 +51,7 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
         if (Preferences.getFaction() != -1) {
+            autoComplete.setText("");
             Api.get().factionHiring(Preferences.getFaction(), new Callback<FactionHiring>() {
                 @Override
                 public void success(FactionHiring factionHiring, Response response) {
@@ -61,7 +66,7 @@ public class MainActivity extends Activity {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Toas.t("Nepodařilo se zjistit, jestli frakce nabírá nebo ne: "+error.toString());
+                    Toas.t("Nepodařilo se zjistit, jestli frakce nabírá nebo ne: " + error.toString());
                 }
             });
         }
@@ -75,6 +80,14 @@ public class MainActivity extends Activity {
 
     private void setupUsers() {
         autoComplete.setAdapter(new ArrayAdapter<User>(this, android.R.layout.simple_dropdown_item_1line, App.users));
+        autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent i = new Intent(MainActivity.this, UserActivity.class);
+                i.putExtra("USER_ID", App.users.get(position).id);
+                startActivity(i);
+            }
+        });
     }
 
     @Subscribe

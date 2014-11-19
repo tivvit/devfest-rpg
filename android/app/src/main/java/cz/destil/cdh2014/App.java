@@ -10,6 +10,7 @@ import cz.destil.cdh2014.api.Api;
 import cz.destil.cdh2014.api.model.User;
 import cz.destil.cdh2014.api.model.Users;
 import cz.destil.cdh2014.event.UsersDownloadedEvent;
+import cz.destil.cdh2014.util.Toas;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -46,7 +47,6 @@ public class App extends Application {
                 @Override
                 public void success(Users user, Response response) {
                     users = user.user;
-                    Toas.t("Uzivatelé staženi ze serveru");
                     bus.post(new UsersDownloadedEvent());
                 }
 

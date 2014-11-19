@@ -8,6 +8,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import cz.destil.cdh2014.data.Preferences;
+
 
 public class FactionActivity extends Activity {
 
@@ -22,7 +24,7 @@ public class FactionActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Preferences.setFaction(position+1);
+                Preferences.setFaction(position + 1);
                 startActivity(new Intent(FactionActivity.this, MainActivity.class));
                 finish();
             }

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CDH 2014</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_faction">FactionActivity</string>
+    <string name="app_name">BDI Mission Control</string>
 
 </resources>
