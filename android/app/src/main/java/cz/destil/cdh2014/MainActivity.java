@@ -11,8 +11,13 @@ import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cz.destil.cdh2014.api.Api;
+import cz.destil.cdh2014.api.model.FactionHiring;
 import cz.destil.cdh2014.api.model.User;
 import cz.destil.cdh2014.event.UsersDownloadedEvent;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class MainActivity extends Activity {
@@ -32,9 +37,34 @@ public class MainActivity extends Activity {
         } else {
             setContentView(R.layout.activity_main);
             ButterKnife.inject(this);
-            setup();
+            setupUsers();
+            faction.setText(FactionActivity.FACTIONS[Preferences.getFaction() - 1]);
         }
         App.downloadUsersIfNeccessary();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (Preferences.getFaction() != -1) {
+            Api.get().factionHiring(Preferences.getFaction(), new Callback<FactionHiring>() {
+                @Override
+                public void success(FactionHiring factionHiring, Response response) {
+                    String factionText = FactionActivity.FACTIONS[Preferences.getFaction() - 1];
+                    if (factionHiring.hiring.equals("1")) {
+                        factionText+=" - frakce otevřená novým členům";
+                    } else {
+                        factionText+=" - frakce je UZAVŘENÁ pro nové členy";
+                    }
+                    faction.setText(factionText);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Toas.t("Nepodařilo se zjistit, jestli frakce nabírá nebo ne: "+error.toString());
+                }
+            });
+        }
     }
 
     @Override
@@ -43,13 +73,12 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
-    private void setup() {
+    private void setupUsers() {
         autoComplete.setAdapter(new ArrayAdapter<User>(this, android.R.layout.simple_dropdown_item_1line, App.users));
-        faction.setText(FactionActivity.FACTIONS[Preferences.getFaction() - 1]);
     }
 
     @Subscribe
     public void onUsersDownloaded(UsersDownloadedEvent event) {
-        setup();
+        setupUsers();
     }
 }
