@@ -16,6 +16,7 @@ class Quests(ndb.Model):
     name = ndb.StringProperty()
     faction = ndb.IntegerProperty()
     points = ndb.IntegerProperty()
+    num = ndb.IntegerProperty()
 
     #quest = msgprop.MessageProperty(Quest_m, indexed_fields=['name', 'faction'])
 
@@ -36,16 +37,17 @@ class Quests(ndb.Model):
         return QuestsCollection_m(quest=quests)
 
     def get(self, id):
-        return self._mapMessage(ndb.Key(Quests, id).get())
+        return self._mapMessage(Quests.query(Quests.num == id).get())
 
     def delete(self, id):
         return ndb.Key(Quests, id).delete()
 
-    def create(self, name, faction, points):
+    def create(self, name, faction, points, num):
         quest = Quests(
             name=name,
             faction=faction,
-            points=points
+            points=points,
+            num=num
         )
 
         quest.put()
@@ -56,6 +58,7 @@ class Quests(ndb.Model):
             name=quest.name,
             faction=faction_names[quest.faction-1] if quest.faction else "",
             points=quest.points,
+            num=quest.num,
             id=quest.key.id()
         )
 

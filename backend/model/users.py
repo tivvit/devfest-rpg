@@ -11,6 +11,7 @@ from solved_quest import SolvedQuest
 from quests import Quests
 
 from faction_names import faction_names
+# from game import Game
 
 import logging
 
@@ -52,11 +53,26 @@ class Users(ndb.Model):
         return ndb.Key(Users, id).delete()
 
     def set_faction(self, user_id, faction_id):
-        user = ndb.Key(Users, user_id).get()
-        user.faction = faction_id
-        user.put()
+        limit = 10
 
-        #todo check limits
+        game = Game()
+        stats = game.stats()
+
+        max = 0
+        min = stats["users"][0]["users"]
+
+        for users in stats["users"]:
+            if min > users["users"]:
+                min = users["users"]
+            if max < users["users"]:
+                max = users["users"]
+
+        user = ndb.Key(Users, user_id).get()
+
+        if max > (min + 10) and stats["users"][faction_id-1]["users"] == max:
+            user.faction = faction_id
+            user.put()
+
         return self._map_message(user)
 
     def create(self, name, email, faction=0):

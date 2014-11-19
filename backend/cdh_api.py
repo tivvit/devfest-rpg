@@ -9,10 +9,12 @@ import logging
 
 from model import Users
 from cdh_m import User_m
+from cdh_m import User_input_m
 from cdh_m import UsersCollection_m
 
 from model import Quests
 from cdh_m import Quest_m
+from cdh_m import Quest_input_m
 from cdh_m import QuestsCollection_m
 
 from model import Game
@@ -78,7 +80,7 @@ class DevfestCdhApi(remote.Service):
         # name=messages.StringField(2, variant=messages.Variant.STRING,
         #                             required=True))
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE, User_m,
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE, User_input_m,
                       path='user', http_method='POST',
                       name='users.addUser')
     def user_add(self, request):
@@ -181,7 +183,7 @@ class DevfestCdhApi(remote.Service):
             raise endpoints.NotFoundException('Quest %s not found.' %
                                               (request.id))
 
-    MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(Quest_m)
+    MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(Quest_input_m)
         # ,
         # name=messages.StringField(2, variant=messages.Variant.STRING,
         #                             required=True))
@@ -190,7 +192,7 @@ class DevfestCdhApi(remote.Service):
                       path='quest', http_method='POST',
                       name='quests.addQuest')
     def quest_add(self, request):
-        return self.quests.create(request.name, request.faction, request.points)
+        return self.quests.create(request.name, request.faction, request.points, request.num)
         #return User(name=request.name) #* request.name
 
     @endpoints.method(ID_RESOURCE, Quest_m,

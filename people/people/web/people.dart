@@ -17,7 +17,8 @@ void submitForm(Event e) {
 }
 
 void hashChange(HashChangeEvent e) {
-  var id = window.location.hash.substring(1);
+  String id = window.location.hash;
+  id = id.substring(1);
   print("------");
   print(id);
   print("------");
