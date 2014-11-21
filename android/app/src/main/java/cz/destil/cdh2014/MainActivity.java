@@ -15,6 +15,7 @@ import com.squareup.otto.Subscribe;
 import cz.destil.cdh2014.adapter.UserAdapter;
 import cz.destil.cdh2014.api.Api;
 import cz.destil.cdh2014.api.model.FactionHiring;
+import cz.destil.cdh2014.api.model.FactionMinPoints;
 import cz.destil.cdh2014.data.Preferences;
 import cz.destil.cdh2014.event.UsersDownloadedEvent;
 import cz.destil.cdh2014.util.Toas;
