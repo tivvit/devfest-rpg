@@ -9,7 +9,7 @@ import retrofit.RestAdapter;
  */
 public class Api {
     public static Cdh get() {
-        RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.BASIC)
+        RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint("https://practical-well-728.appspot.com/_ah/api/devfest_cdh_api/v1")
                 .build();
         return restAdapter.create(Cdh.class);

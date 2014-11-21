@@ -3,19 +3,18 @@ package cz.destil.cdh2014;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
-import com.squareup.otto.Subscribe;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.otto.Subscribe;
+import cz.destil.cdh2014.adapter.UserAdapter;
 import cz.destil.cdh2014.api.Api;
 import cz.destil.cdh2014.api.model.FactionHiring;
-import cz.destil.cdh2014.api.model.User;
 import cz.destil.cdh2014.data.Preferences;
 import cz.destil.cdh2014.event.UsersDownloadedEvent;
 import cz.destil.cdh2014.util.Toas;
@@ -41,7 +40,9 @@ public class MainActivity extends Activity {
         } else {
             setContentView(R.layout.activity_main);
             ButterKnife.inject(this);
-            setupUsers();
+            if (App.users != null) {
+                setupUsers();
+            }
             faction.setText(FactionActivity.FACTIONS[Preferences.getFaction() - 1]);
         }
         App.downloadUsersIfNeccessary();
@@ -57,9 +58,9 @@ public class MainActivity extends Activity {
                 public void success(FactionHiring factionHiring, Response response) {
                     String factionText = FactionActivity.FACTIONS[Preferences.getFaction() - 1];
                     if (factionHiring.hiring.equals("1")) {
-                        factionText+=" - frakce otevřená novým členům";
+                        factionText += " - frakce otevřená novým členům";
                     } else {
-                        factionText+=" - frakce je UZAVŘENÁ pro nové členy";
+                        factionText += " - frakce je UZAVŘENÁ pro nové členy";
                     }
                     faction.setText(factionText);
                 }
@@ -79,12 +80,14 @@ public class MainActivity extends Activity {
     }
 
     private void setupUsers() {
-        autoComplete.setAdapter(new ArrayAdapter<User>(this, android.R.layout.simple_dropdown_item_1line, App.users));
+        Log.d("prd", "h=" + App.users);
+        autoComplete.setAdapter(new UserAdapter(this, android.R.layout.simple_dropdown_item_1line, App.users));
         autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Log.d("hovno", "user id="+id);
                 Intent i = new Intent(MainActivity.this, UserActivity.class);
-                i.putExtra("USER_ID", App.users.get(position).id);
+                i.putExtra("USER_ID", String.valueOf(id));
                 startActivity(i);
             }
         });

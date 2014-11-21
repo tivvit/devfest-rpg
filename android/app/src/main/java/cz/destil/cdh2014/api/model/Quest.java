@@ -7,6 +7,11 @@ package cz.destil.cdh2014.api.model;
  */
 public class Quest {
     public String points;
-    public String name;
-    public String faction;
+    public InnerQuest quest;
+
+    public static class InnerQuest {
+        public String points;
+        public String name;
+        public String faction;
+    }
 }

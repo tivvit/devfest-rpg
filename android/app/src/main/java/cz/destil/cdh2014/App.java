@@ -1,9 +1,11 @@
 package cz.destil.cdh2014;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.squareup.otto.Bus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cz.destil.cdh2014.api.Api;
@@ -47,6 +49,7 @@ public class App extends Application {
                 @Override
                 public void success(Users user, Response response) {
                     users = user.user;
+                    Log.d("hovno", "h-"+users);
                     bus.post(new UsersDownloadedEvent());
                 }
 

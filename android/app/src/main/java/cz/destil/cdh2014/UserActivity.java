@@ -72,16 +72,22 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
     private void setQuests(TextView textView, List<Quest> quests) {
         String text = "";
         int i = 0;
-        for (Quest quest : quests) {
-            String name = quest.name;
-            if (name.length() > 50) {
-                name = name.substring(0, 50);
+        if (quests != null) {
+            for (Quest quest : quests) {
+                if (quest.quest == null) {
+                    text += "Ad-hoc quest za " + quest.points + " bodů";
+                } else {
+                    String name = quest.quest.name;
+                    if (name.length() > 50) {
+                        name = name.substring(0, 50);
+                    }
+                    text += name + " | " + quest.points + " bodů | " + quest.quest.faction;
+                }
+                if (i != quests.size() - 1) {
+                    text += "\n";
+                }
+                i++;
             }
-            text += name + " | " + quest.points + " bodů | " + quest.faction;
-            if (i != quests.size() - 1) {
-                text += "\n";
-            }
-            i++;
         }
         textView.setText(text);
     }
