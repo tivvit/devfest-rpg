@@ -1,25 +1,33 @@
 package cz.destil.cdh2014;
 
-import android.app.Activity;
+import java.util.List;
+
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import cz.destil.cdh2014.api.Api;
 import cz.destil.cdh2014.api.model.Quest;
 import cz.destil.cdh2014.api.model.UserStats;
 import cz.destil.cdh2014.data.Preferences;
+import cz.destil.cdh2014.dialog.AddPointsDialog;
 import cz.destil.cdh2014.util.Toas;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
+import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
 
-public class UserActivity extends Activity {
+
+public class UserActivity extends FragmentActivity implements ISimpleDialogListener {
 
     String userId;
 
@@ -77,4 +85,54 @@ public class UserActivity extends Activity {
         }
         textView.setText(text);
     }
+
+    @OnClick(R.id.addToFaction)
+    public void onFactionClick() {
+        SimpleDialogFragment.createBuilder(this, getSupportFragmentManager()).setTitle("Opravdu přijmout do frakce?")
+            .setPositiveButtonText("Ano").setNegativeButtonText("Ne").setRequestCode(42).show();
+    }
+
+    @OnClick(R.id.completeQuest)
+    public void onCompleteQuest() {
+        try {
+            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
+            startActivityForResult(intent, 0);
+        } catch (Exception e) {
+            Uri marketUri = Uri.parse("https://play.google.com/store/apps/details?id=eu.inmite.prj.vf.reader");
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
+            startActivity(marketIntent);
+        }
+    }
+
+    @OnClick(R.id.adHoc)
+    public void onAdHoc() {
+        AddPointsDialog.show(this);
+    }
+
+    @Override
+    public void onPositiveButtonClicked(int i) {
+
+    }
+
+    @Override
+    public void onNegativeButtonClicked(int i) {
+
+    }
+
+    @Override
+    public void onNeutralButtonClicked(int i) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                String contents = data.getStringExtra("SCAN_RESULT");
+            }
+        }
+    }
+
 }

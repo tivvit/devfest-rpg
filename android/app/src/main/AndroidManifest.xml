@@ -22,11 +22,7 @@
         </activity>
         <activity
             android:name="cz.destil.cdh2014.FactionActivity"
-            android:label="Vyber frakci"
-            android:parentActivityName="cz.destil.cdh2014.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="cz.destil.cdh2014.MainActivity"/>
+            android:label="Vyber frakci">
         </activity>
         <activity
             android:name="cz.destil.cdh2014.UserActivity"
