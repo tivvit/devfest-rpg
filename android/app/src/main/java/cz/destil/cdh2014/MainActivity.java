@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cz.destil.cdh2014.api.Api;
 import cz.destil.cdh2014.api.model.FactionHiring;
+import cz.destil.cdh2014.api.model.FactionMinPoints;
 import cz.destil.cdh2014.api.model.User;
 import cz.destil.cdh2014.data.Preferences;
 import cz.destil.cdh2014.event.UsersDownloadedEvent;
@@ -30,6 +31,8 @@ public class MainActivity extends Activity {
     AutoCompleteTextView autoComplete;
     @InjectView(R.id.faction)
     TextView faction;
+    @InjectView(R.id.factionMin)
+    TextView factionMin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,17 @@ public class MainActivity extends Activity {
                 @Override
                 public void failure(RetrofitError error) {
                     Toas.t("Nepodařilo se zjistit, jestli frakce nabírá nebo ne: " + error.toString());
+                }
+            });
+            Api.get().factionMinPoints(new Callback<FactionMinPoints>() {
+                @Override
+                public void success(FactionMinPoints factionMinPoints, Response response) {
+                    factionMin.setText(factionMinPoints.min);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Toas.t("Nepodařilo se stáhnout min počet bodů do frakce");
                 }
             });
         }

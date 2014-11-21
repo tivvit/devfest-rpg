@@ -30,6 +30,7 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
     static final int FACTION_DIALOG = 42;
 
     String userId;
+    boolean previousPossibleToJoin = true;
 
     @InjectView(R.id.nameEmail)
     TextView nameEmail;
@@ -59,7 +60,12 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
                 factionPoints.setText(userStats.user.faction + " - " + userStats.pointsSum);
                 setQuests(todo, userStats.todo);
                 setQuests(completed, userStats.quests);
-                addToFaction.setEnabled(userStats.allowedToFaction.equals("1"));
+                boolean possibleToJoin = userStats.allowedToFaction.equals("1");
+                if (!previousPossibleToJoin && possibleToJoin) {
+                    SimpleDialogFragment.createBuilder(UserActivity.this, getSupportFragmentManager()).setMessage("Tototo hráče je nyní možné " +
+                            "přijmout do frakce!").setNegativeButtonText("Zavřít").show();
+                }
+                addToFaction.setEnabled(possibleToJoin);
             }
 
             @Override
@@ -114,7 +120,7 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
     @Override
     public void onPositiveButtonClicked(int requestCode) {
         if (requestCode == FACTION_DIALOG) {
-            Api.get().setFaction(userId, Preferences.getFaction(), new Callback() {
+            Api.get().setFaction(userId, Preferences.getFaction(), new Callback<Object>() {
                 @Override
                 public void success(Object o, Response response) {
                     Toas.t("Hráč už je navždy váš!");
@@ -127,7 +133,7 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
                 }
             });
         } else if (requestCode == AddPointsDialog.ADD_POINTS_DIALOG) {
-            Api.get().givePoints(userId, AddPointsDialog.numberOfPoints, new Callback() {
+            Api.get().givePoints(userId, AddPointsDialog.numberOfPoints, new Callback<Object>() {
                 @Override
                 public void success(Object o, Response response) {
                     Toas.t(AddPointsDialog.numberOfPoints+" bodů připsáno hráči.");
@@ -165,7 +171,7 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
                     Toas.t("Nascanován špatný QR kód");
                 }
                 if (questId != -1) {
-                    Api.get().questSolved(userId, questId, new Callback() {
+                    Api.get().questSolved(userId, questId, new Callback<Object>() {
                         @Override
                         public void success(Object o, Response response) {
                             Toas.t("Quest úspěšně splněn");
@@ -174,7 +180,7 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Toas.t("Zapsání questu jako splněný selhalo");
+                            Toas.t("Zapsání questu SELHALO!");
                         }
                     });
                 }
