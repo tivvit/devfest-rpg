@@ -31,7 +31,7 @@ class SolvedQuest(ndb.Model):
     def get_user_points_sum(self, user_id):
         sum = 0
         for solved in SolvedQuest.query(SolvedQuest.id_user == user_id).fetch():
-            sum += solved.points
+            sum += int(solved.points)
 
         return sum
 

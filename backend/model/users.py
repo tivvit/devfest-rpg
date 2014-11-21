@@ -14,7 +14,6 @@ from faction_names import faction_names
 
 import logging
 
-
 class Users(ndb.Model):
     # id = messages.IntegerField(1)
     name = ndb.StringProperty()
@@ -31,7 +30,7 @@ class Users(ndb.Model):
         for user in Users.query().order(Users.name).fetch():
             users.append(self._map_message(user))
 
-        logging.info(users)
+        # logging.info(users)
         return UsersCollection_m(user=users)
 
     def search(self, query):
@@ -122,36 +121,98 @@ class Users(ndb.Model):
         )
 
     def solve_quest(self, user_id, quest_id):
-        solved_quest = SolvedQuest()
+        # solved_quest = SolvedQuest()
 
-        quests = Quests()
-        points = quests.get(quest_id).points
+        # quests = Quests()
+        quest = Quests.query(Quests.num == quest_id).get()
+        points = quest.points
 
-        solved = solved_quest.solve_quest(user_id, quest_id, points)
+        user = ndb.Key(Users, user_id).get()
 
-        logging.warning(solved)
+        logging.info(user.faction)
+        logging.info(quest.faction)
 
-        return SolvedQuest_m(
-            userId=solved.id_user,
-            questId=solved.id_quest,
-            points=solved.points
-        )
+        if quest.faction == 0 or quest.faction == user.faction:
+            solved_c = self.get_points(user_id)
+            solved_c = solved_c.solved_quests
 
-    def get_stats(self, user_id, faction_id):
+            alreadySolved = False
+
+            for s in solved_c:
+                if s.quest and quest.num == s.quest.num:
+                    alreadySolved = True
+                    break
+
+            if not alreadySolved:
+                solved_quest = SolvedQuest()
+                solved = solved_quest.solve_quest(user_id, quest_id, points)
+                logging.warning(solved)
+
+                return SolvedQuest_m(
+                    userId=solved.id_user,
+                    questId=solved.id_quest,
+                    points=solved.points
+                )
+            # else:
+            #     raise Exception
+        else:
+            raise Exception
+
+    def get_stats(self, game, user_id, faction_id):
         from backend.cdh_m import Quest_m, User_stats_m
 
-        user = self._map_message(ndb.Key(Users, user_id).get())
-        q = []
-        q.append(Quest_m(name="aa", faction="aa", points=2))
-        q.append(Quest_m(name="aa", faction="aa", points=2))
-        return User_stats_m(
-            user=user,
-            todo=q,
-            quests=[Quest_m(name="aa", faction="aa", points=4)],
-            pointsSum=55,
-            allowedToFaction=1
-        )
+        user = ndb.Key(Users, user_id).get()
+        user_m = self._map_message(user)
+        # q = []
+        # q.append(Quest_m(name="Zabij vsechny kolem", faction="Nefrakcni", points=2))
+        # q.append(Quest_m(name="Zabij vsechny Vitalisty", faction="Metalide", points=10))
 
+        #logging.debug()
+
+        solved = self.get_points(user_id)
+        solved = solved.solved_quests
+
+        # solved = []
+        # for s in solved_c:
+        #     if s.quest:
+        #         solved.append(s.quest)
+
+        q = Quests()
+        list_faction = 0
+        if user.faction == faction_id:
+            list_faction = faction_id
+
+        todo = q.list_by_fraction(list_faction)
+        todo = todo.quest
+
+        # logging.info("cnt: " + todo)
+        # logging.info(">>>>>>>>>>>>>>")
+
+        filtered_todo = []
+
+        for t in todo:
+            add = True
+            # logging.info(solved)
+            # logging.info("========")
+            logging.info("========")
+            for solv in solved:
+                # logging.info("solv" + solv.num)
+                # logging.info("todo" + t.num)
+
+                if t.num and solv.quest and solv.quest.num == t.num:
+                    add = False
+                    break
+
+            if add:
+                filtered_todo.append(t)
+
+        return User_stats_m(
+            user=user_m,
+            todo=filtered_todo,
+            quests=solved,
+            pointsSum=self.get_points_sum(user_id),
+            allowedToFaction=int(user.faction == 0 and self.allowed_to_faction(game, user_id) and game.faction_hiring(faction_id))
+        )
 
     def _map_message(self, user):
         return User_m(
@@ -159,5 +220,5 @@ class Users(ndb.Model):
             email=user.email,
             factionId=user.faction,
             faction=faction_names[user.faction] if user.faction else "",
-            id=user.key.id()
+            id=long(user.key.id())
         )

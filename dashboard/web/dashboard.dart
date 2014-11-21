@@ -43,7 +43,7 @@ void onStatsLoaded(String responseText) {
         'data': statsData
       }]
   }, {
-    'titleText': 'Research points',
+    'titleText': 'Výzkumné body',
     'scaleMinValue': 0.0,
     'barShowStroke': false,
     'scaleOverride': true,

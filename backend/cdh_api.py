@@ -45,7 +45,9 @@ class DevfestCdhApi(remote.Service):
                       path='user', http_method='GET',
                       name='users.list')
     def users_list(self, unused_request):
-        return self.users.list()
+        usrs = self.users.list()
+        logging.info(usrs)
+        return usrs
 
     QUERY = endpoints.ResourceContainer(
             message_types.VoidMessage,
@@ -86,7 +88,7 @@ class DevfestCdhApi(remote.Service):
                       name='users.getUserStats')
     def user_stat(self, request):
         try:
-            return self.users.get_stats(request.user_id, request.faction_id)
+            return self.users.get_stats(self.game, request.user_id, request.faction_id)
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('User %s not found.' %
                                               (request.id))
@@ -152,17 +154,25 @@ class DevfestCdhApi(remote.Service):
             raise endpoints.NotFoundException('User %s not found.' %
                                               (request.id))
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE_QUEST, SolvedQuest_m,
+    MULTIPLY_METHOD_RESOURCE_POINTS = endpoints.ResourceContainer(
+        user_id=messages.IntegerField(2, variant=messages.Variant.INT64, required=True),
+        points=messages.IntegerField(3, variant=messages.Variant.INT64, required=True)
+    )
+
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE_POINTS, SolvedQuest_m,
                       path='givePoints/{user_id}', http_method='POST',
                       name='users.givePoints')
     def user_give_points(self, request):
-        return self.users.add_points(request.user_id, request.quest_id)
+        return self.users.add_points(request.user_id, request.points)
 
     @endpoints.method(MULTIPLY_METHOD_RESOURCE_QUEST, SolvedQuest_m,
                       path='questSolved/{user_id}', http_method='POST',
                       name='users.questSolved')
     def user_quest_solved(self, request):
-        return self.users.solve_quest(request.user_id, request.quest_id)
+        try:
+            return self.users.solve_quest(request.user_id, request.quest_id)
+        except:
+            raise endpoints.ForbiddenException('Quest solved or not in faction')
 
     """
         Quests
@@ -271,6 +281,13 @@ class DevfestCdhApi(remote.Service):
         return self.game.set_min_faction_points(request.value)
         # except (IndexError, TypeError):
         #     raise endpoints.NotFoundException('Quest %s not found.')
+
+    @endpoints.method(message_types.VoidMessage, FactionMinPoints_m,
+                      path='factionMinPoints', http_method='GET',
+                      name='faction.getMinPoints')
+    def faction_get_min_points(self, ususedRequest):
+        # try:
+        return self.game.get_min_faction_points()
 
 
 

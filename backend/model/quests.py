@@ -33,6 +33,10 @@ class Quests(ndb.Model):
         for quest in Quests.query(Quests.faction == id_fraction).fetch():
             quests.append(self._mapMessage(quest))
 
+        if id_fraction:
+            for quest in Quests.query(Quests.faction == 0).fetch():
+                quests.append(self._mapMessage(quest))
+
         logging.info(quests)
         return QuestsCollection_m(quest=quests)
 

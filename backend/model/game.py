@@ -70,7 +70,7 @@ class Game(ndb.Model):
 
     def get_min_faction_points(self):
         game = Game.query().get()
-        return game.min_points
+        return FactionMinPoints_m(min=game.min_points)
 
     def get_min_faction_points_m(self):
         game = Game.query().get()
