@@ -31,5 +31,5 @@ public interface Cdh {
     public void setFaction(@Path("userId") String userId, @Query("faction_id") int factionId, Callback<Object> cb);
 
     @POST("/givePoints/{userId}")
-    public void givePoints(@Path("userId") String userId, @Query("quest_id") int points, Callback<Object> cb);
+    public void givePoints(@Path("userId") String userId, @Query("points") int points, Callback<Object> cb);
 }
