@@ -11,9 +11,9 @@
 
 
     <TextView
-        android:text="Tvoje frakce:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    android:text="Tvoje frakce:"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -21,6 +21,18 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         tools:text="Vitalisté"
         android:id="@+id/faction"/>
+
+    <TextView
+    android:text="Minimum bodů pro vstup do frakce:"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        tools:text="40"
+        android:id="@+id/factionMin"/>
 
 
     <TextView

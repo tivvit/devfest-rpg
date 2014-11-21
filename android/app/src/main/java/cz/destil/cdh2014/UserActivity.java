@@ -1,14 +1,13 @@
 package cz.destil.cdh2014;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -19,17 +18,19 @@ import cz.destil.cdh2014.api.model.UserStats;
 import cz.destil.cdh2014.data.Preferences;
 import cz.destil.cdh2014.dialog.AddPointsDialog;
 import cz.destil.cdh2014.util.Toas;
+import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
+import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
-import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
-
 
 public class UserActivity extends FragmentActivity implements ISimpleDialogListener {
 
+    static final int FACTION_DIALOG = 42;
+
     String userId;
+    boolean previousPossibleToJoin = true;
 
     @InjectView(R.id.nameEmail)
     TextView nameEmail;
@@ -59,7 +60,12 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
                 factionPoints.setText(userStats.user.faction + " - " + userStats.pointsSum);
                 setQuests(todo, userStats.todo);
                 setQuests(completed, userStats.quests);
-                addToFaction.setEnabled(userStats.allowedToFaction.equals("1"));
+                boolean possibleToJoin = userStats.allowedToFaction.equals("1");
+                if (!previousPossibleToJoin && possibleToJoin) {
+                    SimpleDialogFragment.createBuilder(UserActivity.this, getSupportFragmentManager()).setMessage("Tototo hráče je nyní možné " +
+                            "přijmout do frakce!").setNegativeButtonText("Zavřít").show();
+                }
+                addToFaction.setEnabled(possibleToJoin);
             }
 
             @Override
@@ -78,8 +84,8 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
                     text += "Ad-hoc quest za " + quest.points + " bodů";
                 } else {
                     String name = quest.quest.name;
-                    if (name.length() > 50) {
-                        name = name.substring(0, 50);
+                    if (name.length() > 21) {
+                        name = name.substring(0, 21);
                     }
                     text += name + " | " + quest.points + " bodů | " + quest.quest.faction;
                 }
@@ -95,7 +101,7 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
     @OnClick(R.id.addToFaction)
     public void onFactionClick() {
         SimpleDialogFragment.createBuilder(this, getSupportFragmentManager()).setTitle("Opravdu přijmout do frakce?")
-            .setPositiveButtonText("Ano").setNegativeButtonText("Ne").setRequestCode(42).show();
+                .setPositiveButtonText("Ano").setNegativeButtonText("Ne").setRequestCode(FACTION_DIALOG).show();
     }
 
     @OnClick(R.id.completeQuest)
@@ -117,8 +123,34 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
     }
 
     @Override
-    public void onPositiveButtonClicked(int i) {
+    public void onPositiveButtonClicked(int requestCode) {
+        if (requestCode == FACTION_DIALOG) {
+            Api.get().setFaction(userId, Preferences.getFaction(), new Callback<Object>() {
+                @Override
+                public void success(Object o, Response response) {
+                    Toas.t("Hráč už je navždy váš!");
+                    download();
+                }
 
+                @Override
+                public void failure(RetrofitError error) {
+                    Toas.t("Nepodařilo se uložit přijmutí hráče do frakce. Možná už nenabíráte.");
+                }
+            });
+        } else if (requestCode == AddPointsDialog.ADD_POINTS_DIALOG) {
+            Api.get().givePoints(userId, AddPointsDialog.numberOfPoints, new Callback<Object>() {
+                @Override
+                public void success(Object o, Response response) {
+                    Toas.t(AddPointsDialog.numberOfPoints+" bodů připsáno hráči.");
+                    download();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Toas.t("Nepodařilo se uložit body na server.");
+                }
+            });
+        }
     }
 
     @Override
@@ -137,6 +169,27 @@ public class UserActivity extends FragmentActivity implements ISimpleDialogListe
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
+                int questId = -1;
+                try {
+                    questId = Integer.parseInt(contents.split("#X")[1]);
+                } catch (Exception e) {
+                    Toas.t("Nascanován špatný QR kód");
+                }
+                if (questId != -1) {
+                    Api.get().questSolved(userId, questId, new Callback<Object>() {
+                        @Override
+                        public void success(Object o, Response response) {
+                            Toas.t("Quest úspěšně splněn");
+                            download();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Toas.t("Zapsání questu SELHALO!");
+                        }
+                    });
+                }
+
             }
         }
     }
