@@ -1,5 +1,7 @@
 __author__ = 'tivvit'
 
+from google.appengine.api import memcache
+
 from users import Users
 from leaderboard import Leaderboard
 from backend.cdh_m import  User_m, UsersCollection_m, FactionStats_m, Stats_m, FactionUsers_m, Leaderboard_entry_m, Leaderboard_m, FactionFull_m, FactionMinPoints_m
@@ -14,31 +16,41 @@ class Game(ndb.Model):
 
 
     def stats(self):
-        self.users = Users()
-        users = [0, 0, 0]
-        points = [0, 0, 0]
+        data = memcache.get('stats')
+        if data is not None:
+            return data
+        else:
+            self.users = Users()
+            users = [0, 0, 0]
+            points = [0, 0, 0]
 
-        for user in Users.query().fetch():
-            if user.faction:
-                users[user.faction-1] += 1
-                points[user.faction-1] += user.get_points_sum(user.key.id())
+            for user in Users.query().fetch():
+                if user.faction:
+                    users[user.faction-1] += 1
+                    points[user.faction-1] += user.get_points_sum(user.key.id())
 
-        faUsers = []
-        for usr in users:
-            faUsers.append(FactionUsers_m(users=usr))
+            faUsers = []
+            for usr in users:
+                faUsers.append(FactionUsers_m(users=usr))
 
-        stats = []
-        for usr in points:
-            stats.append(Stats_m(points=usr))
+            stats = []
+            for usr in points:
+                stats.append(Stats_m(points=usr))
 
-        logging.info("%s", users)
+            logging.info("%s", users)
 
-        return FactionStats_m(users=faUsers, stats=stats)
+            fa_stats = FactionStats_m(users=faUsers, stats=stats)
+            memcache.add(key="stats", value=fa_stats, time=160)
+            return fa_stats
 
     def leaderboard(self, limit):
-
-        lb_m = Leaderboard().query().get()
-        return Leaderboard_m(leaderboard=lb_m.leaderboard[:limit])
+        data = memcache.get('leaderboard')
+        if data is not None:
+            return data
+        else:
+            lb_m = Leaderboard().query().get()
+            memcache.add(key="leaderboard", value=lb_m, time=160)
+            return Leaderboard_m(leaderboard=lb_m.leaderboard[:limit])
 
         # leaderboard = []
         #
