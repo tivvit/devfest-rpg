@@ -6,6 +6,8 @@ from google.appengine.ext.ndb import msgprop
 
 from protorpc import messages
 
+from google.appengine.api import memcache
+
 from backend.cdh_m import User_m, UsersCollection_m, SolvedQuestSum_m, SolvedQuest_m, SolvedQuestsCollection_m
 from solved_quest import SolvedQuest
 from quests import Quests
@@ -27,13 +29,18 @@ class Users(ndb.Model):
     #     self.solved_quest = SolvedQuest()
 
     def list(self):
-        users = []
-        for user in Users.query().order(Users.name).fetch():
-            users.append(self._map_message(user))
+        data = memcache.get('users')
+        if data is not None:
+            return data
+        else:
+            users = []
+            for user in Users.query().order(Users.name).fetch():
+                users.append(self._map_message(user))
 
-        # logging.info(users)
-        return UsersCollection_m(user=users)
-
+            # logging.info(users)
+            users_m = UsersCollection_m(user=users)
+            memcache.add(key="users", value=users_m, time=600)
+            return users_m
     def search(self, query):
         users = []
         # for user in Users.query(Users.name==query).fetch():

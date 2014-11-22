@@ -44,13 +44,19 @@ class Game(ndb.Model):
             return fa_stats
 
     def leaderboard(self, limit):
-        data = memcache.get('leaderboard')
+        data = memcache.get('leaderboard_a')
         if data is not None:
             return data
         else:
-            lb_m = Leaderboard().query().get()
-            memcache.add(key="leaderboard", value=lb_m, time=160)
-            return Leaderboard_m(leaderboard=lb_m.leaderboard[:limit])
+            data = memcache.get('leaderboard')
+            if data is not None:
+                return data
+            else:
+                lb_m = Leaderboard().query().get()
+                memcache.add(key="leaderboard", value=lb_m, time=500)
+                return lb_m
+                # lb_m = Leaderboard().query().get()
+                # return Leaderboard_m(leaderboard=lb_m.leaderboard[:limit])
 
         # leaderboard = []
         #
@@ -67,14 +73,26 @@ class Game(ndb.Model):
     def generateLeaderboard(self):
         leaderboard = []
 
+        leaderboard_a = []
+
+        cntr = 0
+
         for user in Users.query().fetch():
+            u = user.get(user.key.id())
+            p = user.get_points_sum(user.key.id())
+
             leaderboard.append(Leaderboard_entry_m(
-                user=user.get(user.key.id()),
-                points=user.get_points_sum(user.key.id())
+                user=u,
+                points=p
             ))
 
+            if p > 0:
+                cntr += 1
+
+        logging.info("total playing count: " + str(cntr))
+
         leaderboard.sort(key=lambda x: x.points, reverse=True)
-        lb_m = Leaderboard_m(leaderboard=leaderboard)
+        lb_m = Leaderboard_m(leaderboard=leaderboard[:20])
 
         if Leaderboard().query().get():
             lb = Leaderboard().query().get()
@@ -83,6 +101,9 @@ class Game(ndb.Model):
         else:
             lb = Leaderboard(leaderboard=lb_m)
             lb.put()
+
+        # lb_short = Leaderboard_m(leaderboard=lb_m.leaderboard[:20])
+        memcache.add(key="leaderboard", value=lb_m, time=500)
 
 
 
