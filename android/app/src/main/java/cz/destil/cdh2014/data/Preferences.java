@@ -1,7 +1,9 @@
-package cz.destil.cdh2014;
+package cz.destil.cdh2014.data;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import cz.destil.cdh2014.App;
 
 /**
  * TODO
