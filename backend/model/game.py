@@ -1,6 +1,7 @@
 __author__ = 'tivvit'
 
 from users import Users
+from leaderboard import Leaderboard
 from backend.cdh_m import  User_m, UsersCollection_m, FactionStats_m, Stats_m, FactionUsers_m, Leaderboard_entry_m, Leaderboard_m, FactionFull_m, FactionMinPoints_m
 
 import logging
@@ -33,6 +34,45 @@ class Game(ndb.Model):
         logging.info("%s", users)
 
         return FactionStats_m(users=faUsers, stats=stats)
+
+    def leaderboard(self, limit):
+
+        lb_m = Leaderboard().query().get()
+        return Leaderboard_m(leaderboard=lb_m.leaderboard[:limit])
+
+        # leaderboard = []
+        #
+        # for user in Users.query().fetch():
+        #     leaderboard.append(Leaderboard_entry_m(
+        #         user=user.get(user.key.id()),
+        #         points=user.get_points_sum(user.key.id())
+        #     ))
+        #
+        # leaderboard.sort(key=lambda x: x.points, reverse=True)
+
+        # return Leaderboard_m(leaderboard=leaderboard[:limit])
+
+    def generateLeaderboard(self):
+        leaderboard = []
+
+        for user in Users.query().fetch():
+            leaderboard.append(Leaderboard_entry_m(
+                user=user.get(user.key.id()),
+                points=user.get_points_sum(user.key.id())
+            ))
+
+        leaderboard.sort(key=lambda x: x.points, reverse=True)
+        lb_m = Leaderboard_m(leaderboard=leaderboard)
+
+        if Leaderboard().query().get():
+            lb = Leaderboard().query().get()
+            lb.leaderboard = lb_m
+            lb.put()
+        else:
+            lb = Leaderboard(leaderboard=lb_m)
+            lb.put()
+
+
 
     def leaderboard(self, limit):
         leaderboard = []

@@ -35,6 +35,9 @@ handlers:
   static_files: dashboard/build/web/imgs/\1
   upload: dashboard/*
 
+- url: /generateLeaderboard
+  script: main.app
+
 # This handler routes requests to your APIs to your Endpoints code.
 # See https://developers.google.com/appengine/docs/python/endpoints/
 - url: /_ah/spi/.*

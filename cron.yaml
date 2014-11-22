@@ -1,0 +1,4 @@
+cron:
+- description: generate Leaderboard
+  url: /generateLeaderboard
+  schedule: every 1 minutes
