@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 __author__ = 'tivvit'
 
 import endpoints
@@ -286,8 +288,7 @@ class DevfestCdhApi(remote.Service):
                       path='factionMinPoints', http_method='GET',
                       name='faction.getMinPoints')
     def faction_get_min_points(self, ususedRequest):
-        # try:
-        return self.game.get_min_faction_points()
+        return self.game.get_min_faction_points_m()
 
 
 

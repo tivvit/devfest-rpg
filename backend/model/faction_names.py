@@ -3,8 +3,8 @@
 __author__ = 'tivvit'
 
 faction_names = [
-    "Nefrakcni",
-    "Exodite",
-    "Metalide",
-    "Vitaliste"
+    u"Nefrakčni",
+    u"Exodité",
+    u"Metalidé",
+    u"Vitalisté"
 ]
