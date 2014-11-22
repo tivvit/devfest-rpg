@@ -15,7 +15,7 @@ class User_m(messages.Message):
 class User_stats_m(messages.Message):
     user = messages.MessageField(User_m, 1)
     quests = messages.MessageField(SolvedQuest_m, 2, repeated=True)
-    todo = messages.MessageField(Quest_m, 3, repeated=True)
+    todo = messages.MessageField(SolvedQuest_m, 3, repeated=True)
     pointsSum = messages.IntegerField(4)
     allowedToFaction = messages.IntegerField(5)
 

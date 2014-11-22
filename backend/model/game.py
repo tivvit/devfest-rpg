@@ -65,16 +65,18 @@ class Game(ndb.Model):
             if faction_min > users.users:
                 faction_min = users.users
 
+        # print faction_max
+        # print faction_min
+
         #print "M" + str(faction_max) + "N" + str(faction_min) + "ID " + str(faction_id) + str(stats.users[faction_id].users)
         return FactionFull_m(hiring=int(not (faction_max > (faction_min + limit) and stats.users[faction_id-1].users == faction_max)))
 
     def get_min_faction_points(self):
         game = Game.query().get()
-        return FactionMinPoints_m(min=game.min_points)
+        return game.min_points
 
     def get_min_faction_points_m(self):
-        game = Game.query().get()
-        return FactionMinPoints_m(min=game.min_points)
+        return FactionMinPoints_m(min=self.get_min_faction_points())
 
     def set_min_faction_points(self, new_min):
         min_points = Game.query().get()

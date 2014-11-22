@@ -37,17 +37,26 @@ void onStatsLoaded(String responseText) {
 
   Bar statsBar = new Bar({
     //'labels': ["Exodité", "Metalidé", "Vitalisté"],
-    'labels': ["", "", ""],
+    'labels': [""],
     'datasets': [{
-        'fillColor': "rgba(75,164,227,0.5)",
-        'data': statsData
+        'fillColor': "#22af8f",
+        'data': [statsData[0]]
+      }, {
+        'fillColor': "#d71767",
+        'data': [statsData[1]]
+      }, {
+        'fillColor': "#ead82e",
+        'data': [statsData[2]]
       }]
   }, {
-    'titleText': 'Výzkumné body',
+//    'titleText': 'Výzkumné body',
+    'titleText': '',
     'scaleMinValue': 0.0,
     'barShowStroke': false,
     'scaleOverride': true,
+    'scaleShowGridLines' : false,
     'scaleMaxValue': statsMax,
+    'strokeColor': "rgba(220,220,220,0.8)"
   });
 
   Bar usersBar = new Bar({
@@ -64,10 +73,10 @@ void onStatsLoaded(String responseText) {
     'scaleMaxValue': usersMax,
   });
 
-  var statsElem = querySelector("#stats")..style.height = '400px';
+  var statsElem = querySelector("#stats")..style.height = '182px';
   statsBar.show(statsElem);
 
-  var usersElem = querySelector("#users")..style.height = '400px';
+  var usersElem = querySelector("#users")..style.height = '182px';
   usersBar.show(usersElem);
 
 }
@@ -87,11 +96,8 @@ void onLeaderboardLoaded(String responseText) {
         ..append(new Element.tag('td')..text = player["points"])
         ..append(new Element.tag('td')..text = player["user"]["faction"]);
 
-    if(cntr < 10)
-      leaderboard1.append(row);
-    else
-      leaderboard2.append(row);
-    
+    if (cntr < 10) leaderboard1.append(row); else leaderboard2.append(row);
+
     cntr++;
   }
 }

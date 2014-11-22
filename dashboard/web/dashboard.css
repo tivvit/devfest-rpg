@@ -1,8 +1,10 @@
 .quote {
-  text-align: center;
+  text-align: left;
   font-size: 22px;
   margin: 24px 0;
   color: rgb(75,164,227);
+  text-transform: uppercase;
+  margin: 4px 0;
 }
 
 .center {
@@ -14,6 +16,47 @@
   display: inline-block;
 }
 
-html {
-  padding-top: 10px;
+html,body  {
+  /*padding-top: 10px;*/
+  width: 1024px;
+  height: 768px;
+  display: block;
+  position: relative;
+  background-color: #5c5c5c;
+  color: white;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  padding: 0 16px;
+}
+
+.center {
+  text-align: center;
+}
+
+.center img {
+  display: inline-block;
+}
+
+.head {
+  color: white;
+  text-transform: uppercase;
+  text-align: center;
+  border-bottom: 1px solid rgba(75,164,227,0.5);
+  border-top: 1px solid rgba(75,164,227,0.5);
+}
+
+#logo {
+  height: 80px;
+}
+
+.ribbon {
+  height: 10px;
+  line-height: 10px;
+}
+
+.faction-images img {
+  margin-right: 12px;
 }

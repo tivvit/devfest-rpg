@@ -52,8 +52,9 @@ class Users(ndb.Model):
 
     def allowed_to_faction(self, game, user_id):
         user_points = self.get_points_sum(user_id)
-        print "points" + str(user_points)
-        print game.get_min_faction_points()
+        # print "points" + str(user_points)
+        # print game.get_min_faction_points()
+        # print user_points >= game.get_min_faction_points()
         return user_points >= game.get_min_faction_points()
 
     def set_faction(self, game, user_id, faction_id):
@@ -204,14 +205,14 @@ class Users(ndb.Model):
                     break
 
             if add:
-                filtered_todo.append(t)
+                filtered_todo.append(SolvedQuest_m(quest=t, points=t.points))
 
         return User_stats_m(
             user=user_m,
             todo=filtered_todo,
             quests=solved,
             pointsSum=self.get_points_sum(user_id),
-            allowedToFaction=int(user.faction == 0 and self.allowed_to_faction(game, user_id) and game.faction_hiring(faction_id))
+            allowedToFaction=int(user.faction == 0 and self.allowed_to_faction(game, user_id) and game.faction_hiring(faction_id).hiring)
         )
 
     def _map_message(self, user):
@@ -219,6 +220,6 @@ class Users(ndb.Model):
             name=user.name,
             email=user.email,
             factionId=user.faction,
-            faction=faction_names[user.faction] if user.faction else "",
+            faction=faction_names[user.faction] if user.faction >= 0 else "",
             id=long(user.key.id())
         )
