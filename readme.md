@@ -6,8 +6,8 @@ This app was used on [Devfest Prague 2014](http://devfest.cz).
 
 ###Content
 * GAE Endpoints backend (Python)
-* Android app (Java)
-* Statistics Dashboard (Dart)
+* Android app for NPC (Java)
+* Statistics Dashboard for data projector (Dart)
 * Administration console (JS)
 
 Devfest RPG is a community effort and we appreciate the help of everyone who wants to help improve the App.
